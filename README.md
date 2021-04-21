@@ -1,0 +1,2 @@
+# LiveCode-GrassBlade-xAPI-LRS
+Martin shared a stack that creates xAPI statement as the user interacts with a video and posts them to an LRS.  He has been working on the stack to create two types of time values needed in xapi statements.  DETAIL  One is a timestamp which should be added to the statements.   There is a button to the top right of the video player.  For now it just gets the current time and formats it into the ISO 8601 standard needed in xAPI timestamps.  
