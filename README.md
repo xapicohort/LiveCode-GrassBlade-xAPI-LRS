@@ -17,6 +17,9 @@ I also have the handler convertToxAPITimeFormat
 
 That is to convert from the current time in a video to the format that is used in the xAPI context and result extensions for the video profile.  I have not added handlers yet to add those extensions but you can see how that is done as well.
 
-04-23-21 Martin Updated this project with a version 5: GrassBlade xAPI LRS connection-jmd-v5.livecode have been uploaded, also as a ziped file,
+04-23-21 Martin Updated this project with a version 5: 
+
+GrassBlade xAPI LRS connection-jmd-v5.livecode have been uploaded, also as a ziped file.
+
 Also, he created a video demo for the final xAPI Cohort - Spring 2021 which has been uploaded to YouTube:
 https://youtu.be/W6kxAX-JAEw
