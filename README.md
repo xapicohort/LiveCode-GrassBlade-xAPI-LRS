@@ -19,7 +19,11 @@ That is to convert from the current time in a video to the format that is used i
 
 04-23-21 Martin Updated this project with a version 5: 
 
-GrassBlade xAPI LRS connection-jmd-v5.livecode have been uploaded, also as a ziped file.
+GrassBlade xAPI LRS connection-jmd-v5.livecode have been uploaded, also as a zipped file.
 
 Also, he created a video demo for the final xAPI Cohort - Spring 2021 which has been uploaded to YouTube:
 https://youtu.be/W6kxAX-JAEw
+
+05-14-21 Update for v6, zipped and source available within the forlder structure: LiveCode xAPI Video Profile Statement Provider v6-00
+
+Video of the v6 demo is in YouTube: https://youtu.be/Aih1aVEnFfU
