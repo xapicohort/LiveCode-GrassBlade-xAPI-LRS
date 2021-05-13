@@ -27,3 +27,7 @@ https://youtu.be/W6kxAX-JAEw
 05-14-21 Update for v6, zipped and source available within the forlder structure: LiveCode xAPI Video Profile Statement Provider v6-00
 
 Video of the v6 demo is in YouTube: https://youtu.be/Aih1aVEnFfU
+
+Back ground video on converting LiveCode stack with internal scripts to external scripts for mangement via GitHub: https://youtu.be/JHW-yyVhEeA
+
+This is a video of how Martin created script only stacks to hold the object script that were stored within the  binary stackfile to this point.  The script only stacks are just plain text files that git hub can track changes to so we can see the history of changes, branch, commit, do pull requests etc. that is not possible if the scripts are in the binary stackfile.
