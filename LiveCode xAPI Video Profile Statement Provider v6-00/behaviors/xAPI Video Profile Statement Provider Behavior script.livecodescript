@@ -319,7 +319,7 @@ command addxAPIObject pObjectID, pObjectType, \
    set the xAPIObjectA of me to txAPI_Statement_ComponentA
 end addxAPIObject
 
-command addxAPIVerb pVerbID, pVerbDisplay, pVerbResultA
+command addxAPIVerb pVerbID, pVerbDisplay, pVerbResultA, pVerbContextA
    # Element components
    put "verb" into tComponent
    # Element data
@@ -334,7 +334,10 @@ command addxAPIVerb pVerbID, pVerbDisplay, pVerbResultA
    ## the array for the result is constructed in the card VideoPlayer scripts
    # BUG  -- The Time value in the results array is not trucated at 3 decimal places
    if pVerbResultA is not empty then
-      put pVerbResultA into txAPI_Statement_ComponentA[tComponent]["result"]
+      addxAPIResult txAPI_Statement_ComponentA, tComponent, pVerbResultA 
+   end if
+   if pVerbContextA is not empty then
+      addxAPIContext txAPI_Statement_ComponentA, tComponent, pVerbContextA 
    end if
    set the xAPIVerbA of me to txAPI_Statement_ComponentA
 end addxAPIVerb
