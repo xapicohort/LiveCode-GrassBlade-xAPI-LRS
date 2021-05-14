@@ -1,4 +1,6 @@
 ﻿script "Video Player Behavior script"
+Local sSegmentStartTime, sSegmentEndtime, sPlayedSegments, sSessionID, sDurationStartTime
+local sVideoLength, sCompletionThreshold
 on opencard
    put empty into field "video URL" of me
    put empty into field "results"
