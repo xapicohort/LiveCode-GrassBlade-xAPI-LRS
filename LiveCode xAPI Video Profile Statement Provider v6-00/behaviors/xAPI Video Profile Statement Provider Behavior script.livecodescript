@@ -339,11 +339,17 @@ command addxAPIVerb pVerbID, pVerbDisplay, pVerbResultA
    set the xAPIVerbA of me to txAPI_Statement_ComponentA
 end addxAPIVerb
 
-function addxAPIResult pSuccess, pCompletion, pScore, pScaled, pDuration
-   
-   
+command addxAPIResult @txAPI_Statement_ComponentA, tComponent, pVerbResultA
+   ## the parameter @txAPI_Statement_ComponentA is passed by reference which means that
+   ## the variable txAPI_Statement_ComponentA will be updated in the original handler
+   put pVerbResultA into txAPI_Statement_ComponentA[tComponent]["result"]
 end addxAPIResult
 
+command addxAPIContext @txAPI_Statement_ComponentA, tComponent, pVerbContextA
+   ## the parameter @txAPI_Statement_ComponentA is passed by reference which means that
+   ## the variable txAPI_Statement_ComponentA will be updated in the original handler
+   put pVerbContextA into txAPI_Statement_ComponentA[tComponent]["context"]
+end addxAPIContext
 
 function convertToxAPITimeFormat pTime, pTimescale
    put round(pTime / pTimescale,3) into txAPITimeSeconds
