@@ -45,6 +45,8 @@ on mouseUp
          break
       case "Video Object Player"
          if the mouseloc is within the rect of graphic "Player Scrubber Rect" then
+            ## BUG:  If the mouse is released outside of the player controller rect this will not work.
+            ## need to handle this.
             set the cVideoTimeStop of this stack to the currenttime of player "Video Object Player" of me
             seekedInVideo the cVideoTimeStart of this stack, the cVideoTimeStop of this stack
          end if
@@ -63,7 +65,6 @@ on mouseDown
 end mouseDown
 
 command OpenVideo
-   set the cISO8601TimeStamp of this stack to the milliseconds
    # this is mapped to the xAPI command initialized
    switch the platform
       case "MacOS"
@@ -81,10 +82,13 @@ command OpenVideo
    put empty into sSegmentStartTime
    put empty into sSegmentEndtime
    put empty into sPlayedSegments
-   ## set the result
+   
+   ## get data for setting result and/or context
+   set the cISO8601TimeStamp of this stack to the milliseconds
    put the duration of player "Video Object Player" of me into tVideoDuration
    put the timescale of player "Video Object Player" of me into tVideoTimeScale
-   # context > extensions > session-ID
+   
+   # context > extensions > session-id
    put uuid("random") into sSessionID
    put sSessionID into tContextA["extensions"]["session-id"]
    ## context > extensions > length
@@ -104,20 +108,26 @@ command OpenVideo
    put field "Completion threshold" of me / 100 into sCompletionThreshold
    put sCompletionThreshold into tContextA["extensions"]["completion-threshold"]
    
+   ## no result for this verb
    put empty into tResultA
    
+   ## update UI
    set the label of the target to "Close Video"
-   # Create and send the xAPI statement
+   
    # JOAN: add actor information
    addxAPIActor field "username" of card 1 of this stack, field "user email" of card 1 of this stack
-   addxAPIObject field "video URL", "Activity", field "video name" of me, "en-US", "A Headset that reads your brainwaves", "en-US", "Activity" 
+   # JOAN: add object information
+   addxAPIObject field "video URL", "Activity", field "video name" of me, "en-US", "A Headset that reads your brainwaves", "en-US", "Activity"
+   
    addxAPIVerb "http://adlnet.gov/expapi/verbs/initialized", "initialized", tResultA, tContextA
+   # Create and send the xAPI statement
    createxAPIstatement
    sendxAPIstatement
 end OpenVideo
 
 command closeVideo
    # this is mapped to the xAPI verb terminated
+   ## get data for setting result and/or context
    set the cISO8601TimeStamp of this stack to the milliseconds
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
@@ -145,16 +155,16 @@ command closeVideo
    ## result > extensions > progress
    ## The calculation for progress  is simplified and does not account 
    ## for segments skipped yet.
-   ## Result > extensions > progress
    put round (tTime/ sVideoLength,2) into tProgress
    put tProgress into tResultA["extensions"]["progress"]
-   ## Result > extensions > played-segments
+   ## result > extensions > played-segments
    put getPlayedSegments() into tResultA["extensions"]["played-segments"]
    
    addxAPIVerb "http://adlnet.gov/expapi/verbs/terminated", "terminated", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
-   ## BUG in Grassblade LRS activity stream this verb is shown as the verb ""completed
+   
+   ## Upate UI
    put empty into field "video URL"
    put empty into field "Simple Statement Display"
    ## TODO:  Add command to empty the object
@@ -162,38 +172,42 @@ command closeVideo
 end closeVideo
 
 on playstarted
+   ## this player object message is mapped to the xAPI command played
+   ## get data for setting result and/or context
    set the cISO8601TimeStamp of this stack to the milliseconds
    set the cVideoTimeStart of this stack to the currenttime of player "Video Object Player" of me
-   # this player object message is mapped to the xAPI command played
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
-   ## Duration
-   ## enter start time value to calulate duration in playStopped handler
-   put the seconds into sDurationStartTime
    
-   # context > extensions > session-ID
+   ## context > extensions > session-id
    put uuid("random") into sSessionID
    put sSessionID into tContextA["extensions"]["session-id"]
    ## context > extensions > length
    put sVideoLength into tContextA["extensions"]["length"]
+   ## completed > result > duration
+   ## this enters start time value to calulate duration in completed handler
+   put the seconds into sDurationStartTime
    
-   ## result > extensions > Time
+   ## result > extensions > time
    put tTime into tResultA["extensions"]["time"]
-   ## Result > extensions > played-segments
+   ## result > extensions > played-segments
    addSegmentStartTime tTime
+   
    addxAPIVerb "http://adlnet.gov/expapi/verbs/played", "played", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
 end playstarted
 
 on playPaused
+   ## this player object message is mapped to the xAPI command paused
+   ## get data for setting result and/or context
    set the cISO8601TimeStamp of this stack to the milliseconds
    set the cVideoTimeStop of this stack to the currenttime of player "Video Object Player" of me
-   # this player object message is mapped to the xAPI command paused
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
-   # context > extensions > session-ID
+   
+   # context > extensions > session-id
    put uuid("random") into sSessionID
    put sSessionID into tContextA["extensions"]["session-id"]
    ## context > extensions > length
@@ -218,7 +232,6 @@ on playPaused
    ## result > extensions > progress
    ## The calculation for progress  is simplified and does not account 
    ## for segments skipped yet.
-   ## Result > extensions > progress
    put round (tTime/ sVideoLength,2) into tProgress
    put tProgress into tResultA["extensions"]["progress"]
    ## Result > extensions > played-segments
@@ -231,34 +244,43 @@ on playPaused
 end playPaused
 
 on seekedInVideo pStartTime, pEndTime
+   ## this player object message is mapped to the xAPI command seeked in video
+   
+   ## get data for setting result and/or context
    set the cISO8601TimeStamp of this stack to the milliseconds
+   set the cVideoTimeStop of this stack to the currenttime of player "Video Object Player" of me
+   put the timescale of player "Video Object Player" of me into tPlayerTimeScale
+   put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
+   
    # context > extensions > session-ID
    put uuid("random") into sSessionID
    put sSessionID into tContextA["extensions"]["session-id"]
    
-   set the cVideoTimeStop of this stack to the currenttime of player "Video Object Player" of me
-   # this player object message is mapped to the xAPI command seeked in video
-   put the timescale of player "Video Object Player" of me into tPlayerTimeScale
-   put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
-   
+   # result > extensions > time-from
    put convertToxAPITimeFormat(pStartTime, tPlayerTimeScale) into tStartTimeConverted
    put tStartTimeConverted into tResultA["result"]["extensions"]["time-from"]
+   # result > extensions > time-to
    put convertToxAPITimeFormat(pEndTime, tPlayerTimeScale) into tEndTimeConverted
    put tEndTimeConverted into tResultA["result"]["extensions"]["time-to"]
-
+   
    addxAPIVerb "http://adlnet.gov/expapi/verbs/seeked", "seeked", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
 end seekedInVideo
 
-on playStopped
+on playStopped   
+   ## this player object message is mapped to the xAPI command completed
+   ## this will be triggered when the video reaches the endTime set in the player properties
+   ## or startTime if playing in reverse.
+   ## If the endTime = the video duration or = 0 it will be triggered when the full movie plays.
+   
+   ## BUG:
+   ## If there is a selection in the video and the endTime < the video Duration this will be likely be called
+   ## when the video reaches the value of endTime of the selection so have to handle this exception
+   
+   ## get data for setting result and/or context
    set the cISO8601TimeStamp of this stack to the milliseconds
    set the cVideoTimeStop of this stack to the currenttime of player "Video Object Player" of me
-   # this player object message is mapped to the xAPI command completed
-   # this will be triggered when the video reaches the endTime set in the player properties
-   # or startTime if playing in reverse.
-   # If the endTime = the video duration or = 0 it will be triggered when the full movie plays.
-   # If the endTime < the video Duration it will be triggered when the video reaches the value of endTime
    
    ## context > extensions > length
    put sVideoLength into tContextA["extensions"]["length"]
@@ -275,6 +297,7 @@ on playStopped
    end if
    put field "Completion threshold" of me / 100 into sCompletionThreshold
    put sCompletionThreshold into tContextA["extensions"]["completion-threshold"]
+   
    ## result > Duration
    put "PT" & (the seconds - sDurationStartTime) & "S" into tDuration
    put tDuration into tResultA["duration"]
@@ -286,29 +309,36 @@ on playStopped
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
    ## result > extensions > progress
+   ## BUG:
    ## The calculation for progress  is simplified and does not account 
    ## for segments skipped yet.
-   ## Result > extensions > progress
+   ## result > extensions > progress
    put round (tTime/ sVideoLength,2) into tProgress
    put tProgress into tResultA["extensions"]["progress"]
-   ## Result > extensions > played-segments
+   ## result > extensions > played-segments
    addSegmentEndTime tTime
    put getPlayedSegments() into tResultA["extensions"]["played-segments"]
+   
    addxAPIVerb "http://adlnet.gov/expapi/verbs/completed", "completed", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
 end playStopped
 
-command screenChangeInteraction
+command screenChangeInteraction   
+   ## this is mapped to the xAPI verb interacted
+   ## TODO:  This in not implemented yet. 
+   ## - Need the code to intercept the message when the video enters and exits full screen
+   
+   ## get data for setting result and/or context
    set the cISO8601TimeStamp of this stack to the milliseconds
-   # this is mapped to the xAPI verb interacted
-   ## TODO:  Need the code to intercept the message when the video enters and exits full screen
+   
    addxAPIVerb "http://adlnet.gov/expapi/verbs/interacted", "interacted"
    createxAPIstatement
    sendxAPIstatement
 end screenChangeInteraction
 
 on addSegmentStartTime tTime
+   ## this for getting data for setting result > extensions > played-segments
    if sPlayedSegments is empty then
       put tTime & "[.]" into sPlayedSegments
    else
@@ -317,10 +347,12 @@ on addSegmentStartTime tTime
 end addSegmentStartTime
 
 on addSegmentEndTime tTime
+   ## this for getting data for setting result > extensions > played-segments
    put tTime after sPlayedSegments
 end addSegmentEndTime tTime
 
 function getPlayedSegments
+   ## this for returning data for setting result > extensions > played-segments
    return sPlayedSegments
 end getPlayedSegments
 
