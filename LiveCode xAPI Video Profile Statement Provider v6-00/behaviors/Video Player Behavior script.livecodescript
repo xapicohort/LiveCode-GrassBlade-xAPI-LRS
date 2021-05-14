@@ -168,6 +168,10 @@ on playstarted
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
+   ## Duration
+   ## enter start time value to calulate duration in playStopped handler
+   put the seconds into sDurationStartTime
+   
    # context > extensions > session-ID
    put uuid("random") into sSessionID
    put sSessionID into tContextA["extensions"]["session-id"]
@@ -271,7 +275,9 @@ on playStopped
    end if
    put field "Completion threshold" of me / 100 into sCompletionThreshold
    put sCompletionThreshold into tContextA["extensions"]["completion-threshold"]
-   
+   ## result > Duration
+   put "PT" & (the seconds - sDurationStartTime) & "S" into tDuration
+   put tDuration into tResultA["duration"]
    ## result > extensions > time
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
