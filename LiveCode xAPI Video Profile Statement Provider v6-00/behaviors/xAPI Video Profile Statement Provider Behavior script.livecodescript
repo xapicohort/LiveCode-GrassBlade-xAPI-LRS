@@ -357,7 +357,7 @@ end addxAPIContext
 function convertToxAPITimeFormat pTime, pTimescale
    put round(pTime / pTimescale,3) into txAPITimeSeconds
    put trunc(pTime / pTimescale) into txAPITimeSecondswhole
-   put (txAPITimeSeconds - txAPITimeSecondswhole) * 1000 into tSecondsThousands
+   put trunc((txAPITimeSeconds - txAPITimeSecondswhole) * 1000) into tSecondsThousands
    repeat until the number of characters of tSecondsThousands = 3
       put tSecondsThousands & "0" into tSecondsThousands
    end repeat
