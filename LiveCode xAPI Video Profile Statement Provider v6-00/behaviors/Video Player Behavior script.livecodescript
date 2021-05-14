@@ -207,6 +207,8 @@ on playPaused
    end if
    put field "Completion threshold" of me / 100 into sCompletionThreshold
    put sCompletionThreshold into tContextA["extensions"]["completion-threshold"]
+   
+   ## result > extensions > time
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
    ## result > extensions > progress
@@ -231,7 +233,7 @@ on seekedInVideo pStartTime, pEndTime
    put sSessionID into tContextA["extensions"]["session-id"]
    
    set the cVideoTimeStop of this stack to the currenttime of player "Video Object Player" of me
-   # this player object message is mapped to the xAPI command paused
+   # this player object message is mapped to the xAPI command seeked in video
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
    
