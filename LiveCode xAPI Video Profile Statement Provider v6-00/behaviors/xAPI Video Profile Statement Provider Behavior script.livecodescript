@@ -319,7 +319,7 @@ command addxAPIObject pObjectID, pObjectType, \
    set the xAPIObjectA of me to txAPI_Statement_ComponentA
 end addxAPIObject
 
-command addxAPIVerb pVerbID, pVerbDisplay, pVerbResultA
+command addxAPIVerb pVerbID, pVerbDisplay, pVerbResultA, pVerbContextA
    # Element components
    put "verb" into tComponent
    # Element data
@@ -334,21 +334,30 @@ command addxAPIVerb pVerbID, pVerbDisplay, pVerbResultA
    ## the array for the result is constructed in the card VideoPlayer scripts
    # BUG  -- The Time value in the results array is not trucated at 3 decimal places
    if pVerbResultA is not empty then
-      put pVerbResultA into txAPI_Statement_ComponentA[tComponent]["result"]
+      addxAPIResult txAPI_Statement_ComponentA, tComponent, pVerbResultA 
+   end if
+   if pVerbContextA is not empty then
+      addxAPIContext txAPI_Statement_ComponentA, tComponent, pVerbContextA 
    end if
    set the xAPIVerbA of me to txAPI_Statement_ComponentA
 end addxAPIVerb
 
-function addxAPIResult pSuccess, pCompletion, pScore, pScaled, pDuration
-   
-   
+command addxAPIResult @txAPI_Statement_ComponentA, tComponent, pVerbResultA
+   ## the parameter @txAPI_Statement_ComponentA is passed by reference which means that
+   ## the variable txAPI_Statement_ComponentA will be updated in the original handler
+   put pVerbResultA into txAPI_Statement_ComponentA[tComponent]["result"]
 end addxAPIResult
 
+command addxAPIContext @txAPI_Statement_ComponentA, tComponent, pVerbContextA
+   ## the parameter @txAPI_Statement_ComponentA is passed by reference which means that
+   ## the variable txAPI_Statement_ComponentA will be updated in the original handler
+   put pVerbContextA into txAPI_Statement_ComponentA[tComponent]["context"]
+end addxAPIContext
 
 function convertToxAPITimeFormat pTime, pTimescale
    put round(pTime / pTimescale,3) into txAPITimeSeconds
    put trunc(pTime / pTimescale) into txAPITimeSecondswhole
-   put (txAPITimeSeconds - txAPITimeSecondswhole) * 1000 into tSecondsThousands
+   put trunc((txAPITimeSeconds - txAPITimeSecondswhole) * 1000) into tSecondsThousands
    repeat until the number of characters of tSecondsThousands = 3
       put tSecondsThousands & "0" into tSecondsThousands
    end repeat

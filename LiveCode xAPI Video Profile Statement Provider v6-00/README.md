@@ -47,3 +47,5 @@ It includes the required parameters, results and contexts and some of the recomm
  
 There is a video on the xAPI Cohort team #xAPI-in-LiveCode showing how this conversion was done: "xAPI-in-Livecode - Preparing stack for git version control.mov"
 The script only stacks now hold the scripts that were in the two cards and the main stack that were stored within the  binary stackfile.  The script only stacks are just plain text files that git hub can track changes to in so as the project is worked on and updated we can see the history of changes, branch, commit, do pull requests etc. that is not possible if the scripts are in the binary stackfile.
+
+Martin Koob
