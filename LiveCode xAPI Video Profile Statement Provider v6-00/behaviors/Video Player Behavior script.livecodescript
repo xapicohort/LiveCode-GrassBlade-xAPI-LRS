@@ -81,7 +81,7 @@ command OpenVideo
    # JOAN: add actor information
    addxAPIActor field "username" of card 1 of this stack, field "user email" of card 1 of this stack
    addxAPIObject field "video URL", "Activity", field "video name" of me, "en-US", "A Headset that reads your brainwaves", "en-US", "Activity" 
-   addxAPIVerb "http://adlnet.gov/expapi/verbs/initialized", "initialized"
+   addxAPIVerb "http://adlnet.gov/expapi/verbs/initialized", "initialized", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
 end OpenVideo
@@ -90,7 +90,7 @@ command closeVideo
    # this is mapped to the xAPI verb terminated
    set the cISO8601TimeStamp of this stack to the milliseconds
    set the filename of player "Video Object Player" of me to empty
-   addxAPIVerb "http://adlnet.gov/expapi/verbs/terminated", "terminated"
+   addxAPIVerb "http://adlnet.gov/expapi/verbs/terminated", "terminated", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
    ## BUG in Grassblade LRS activity stream this verb is shown as the verb ""completed
@@ -108,7 +108,7 @@ on playstarted
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
-   addxAPIVerb "http://adlnet.gov/expapi/verbs/played", "played", tResultA
+   addxAPIVerb "http://adlnet.gov/expapi/verbs/played", "played", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
 end playstarted
@@ -121,7 +121,8 @@ on playPaused
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
-   addxAPIVerb "http://adlnet.gov/expapi/verbs/paused", "paused", tResultA
+   
+   addxAPIVerb "http://adlnet.gov/expapi/verbs/paused", "paused", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
 end playPaused
@@ -136,7 +137,8 @@ on seekedInVideo pStartTime, pEndTime
    put tStartTimeConverted into tResultA["result"]["extensions"]["time-from"]
    put convertToxAPITimeFormat(pEndTime, tPlayerTimeScale) into tEndTimeConverted
    put tEndTimeConverted into tResultA["result"]["extensions"]["time-to"]
-   addxAPIVerb "http://adlnet.gov/expapi/verbs/seeked", "seeked", tResultA
+
+   addxAPIVerb "http://adlnet.gov/expapi/verbs/seeked", "seeked", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
 end seekedInVideo
@@ -149,7 +151,7 @@ on playStopped
    # or startTime if playing in reverse.
    # If the endTime = the video duration or = 0 it will be triggered when the full movie plays.
    # If the endTime < the video Duration it will be triggered when the video reaches the value of endTime
-   addxAPIVerb "http://adlnet.gov/expapi/verbs/completed", "completed"
+   addxAPIVerb "http://adlnet.gov/expapi/verbs/completed", "completed", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
 end playStopped
