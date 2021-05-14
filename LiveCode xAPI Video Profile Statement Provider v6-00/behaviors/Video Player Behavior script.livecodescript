@@ -278,6 +278,8 @@ on playStopped
    ## result > Duration
    put "PT" & (the seconds - sDurationStartTime) & "S" into tDuration
    put tDuration into tResultA["duration"]
+   ## result > completed
+   put "true" into tResultA["completed"]
    ## result > extensions > time
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
