@@ -168,6 +168,9 @@ on playstarted
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
+   # context > extensions > session-ID
+   put uuid("random") into sSessionID
+   put sSessionID into tContextA["extensions"]["session-id"]
    put tTime into tResultA["extensions"]["time"]
    addxAPIVerb "http://adlnet.gov/expapi/verbs/played", "played", tResultA, tContextA
    createxAPIstatement
@@ -180,6 +183,9 @@ on playPaused
    # this player object message is mapped to the xAPI command paused
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
+   # context > extensions > session-ID
+   put uuid("random") into sSessionID
+   put sSessionID into tContextA["extensions"]["session-id"]
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
    
@@ -190,6 +196,10 @@ end playPaused
 
 on seekedInVideo pStartTime, pEndTime
    set the cISO8601TimeStamp of this stack to the milliseconds
+   # context > extensions > session-ID
+   put uuid("random") into sSessionID
+   put sSessionID into tContextA["extensions"]["session-id"]
+   
    set the cVideoTimeStop of this stack to the currenttime of player "Video Object Player" of me
    # this player object message is mapped to the xAPI command paused
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
