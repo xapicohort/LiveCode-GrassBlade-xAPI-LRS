@@ -119,7 +119,38 @@ end OpenVideo
 command closeVideo
    # this is mapped to the xAPI verb terminated
    set the cISO8601TimeStamp of this stack to the milliseconds
+   put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
+   put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    set the filename of player "Video Object Player" of me to empty
+   
+   ## context > extensions > length
+   put sVideoLength into tContextA["extensions"]["length"]
+   ## context > extensions > completion-threshold
+   put field "Completion threshold" of me into tCompletionThreshold
+   if tCompletionThreshold is empty then
+      put 100 into field "Completion Threshold"
+   end if
+   if tCompletionThreshold is not a number then
+      put 100 into field "Completion Threshold"
+   end if
+   if tCompletionThreshold > 100 or tCompletionThreshold < 0 then
+      put 100 into field "Completion Threshold"
+   end if
+   put field "Completion threshold" of me / 100 into sCompletionThreshold
+   put sCompletionThreshold into tContextA["extensions"]["completion-threshold"]
+   
+   ## result > extensions > time
+   put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
+   put tTime into tResultA["extensions"]["time"]
+   ## result > extensions > progress
+   ## The calculation for progress  is simplified and does not account 
+   ## for segments skipped yet.
+   ## Result > extensions > progress
+   put round (tTime/ sVideoLength,2) into tProgress
+   put tProgress into tResultA["extensions"]["progress"]
+   ## Result > extensions > played-segments
+   put getPlayedSegments() into tResultA["extensions"]["played-segments"]
+   
    addxAPIVerb "http://adlnet.gov/expapi/verbs/terminated", "terminated", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
