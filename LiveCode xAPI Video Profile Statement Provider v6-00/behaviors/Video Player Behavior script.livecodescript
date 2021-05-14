@@ -176,6 +176,8 @@ on playstarted
    
    ## result > extensions > Time
    put tTime into tResultA["extensions"]["time"]
+   ## Result > extensions > played-segments
+   addSegmentStartTime tTime
    addxAPIVerb "http://adlnet.gov/expapi/verbs/played", "played", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
@@ -194,6 +196,9 @@ on playPaused
    put sVideoLength into tContextA["extensions"]["length"]
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
+   ## Result > extensions > played-segments
+   addSegmentEndTime tTime
+   put getPlayedSegments() into tResultA["extensions"]["played-segments"]
    
    addxAPIVerb "http://adlnet.gov/expapi/verbs/paused", "paused", tResultA, tContextA
    createxAPIstatement
@@ -237,6 +242,9 @@ on playStopped
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
+   ## Result > extensions > played-segments
+   addSegmentEndTime tTime
+   put getPlayedSegments() into tResultA["extensions"]["played-segments"]
    addxAPIVerb "http://adlnet.gov/expapi/verbs/completed", "completed", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
@@ -251,7 +259,21 @@ command screenChangeInteraction
    sendxAPIstatement
 end screenChangeInteraction
 
+on addSegmentStartTime tTime
+   if sPlayedSegments is empty then
+      put tTime & "[.]" into sPlayedSegments
+   else
+      put "[,]" & tTime & "[.]" after sPlayedSegments
+   end if
+end addSegmentStartTime
 
+on addSegmentEndTime tTime
+   put tTime after sPlayedSegments
+end addSegmentEndTime tTime
+
+function getPlayedSegments
+   return sPlayedSegments
+end getPlayedSegments
 
 
 
