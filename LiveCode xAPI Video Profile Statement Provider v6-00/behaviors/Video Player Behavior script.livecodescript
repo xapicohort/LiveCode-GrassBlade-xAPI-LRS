@@ -78,6 +78,34 @@ command OpenVideo
    # Update the user interface
    put it into field "video URL"
    set the filename of player "Video Object Player" of me to field "video URL" of me
+   put empty into sSegmentStartTime
+   put empty into sSegmentEndtime
+   put empty into sPlayedSegments
+   ## set the result
+   put the duration of player "Video Object Player" of me into tVideoDuration
+   put the timescale of player "Video Object Player" of me into tVideoTimeScale
+   # context > extensions > session-ID
+   put uuid("random") into sSessionID
+   put sSessionID into tContextA["extensions"]["session-id"]
+   ## context > extensions > length
+   put convertToxAPITimeFormat(tVideoDuration, tVideoTimeScale) into sVideoLength
+   put sVideoLength into tContextA["extensions"]["length"]
+   ## context > extensions > completion-threshold
+   put field "Completion threshold" of me into tCompletionThreshold
+   if tCompletionThreshold is empty then
+      put 100 into field "Completion Threshold"
+   end if
+   if tCompletionThreshold is not a number then
+      put 100 into field "Completion Threshold"
+   end if
+   if tCompletionThreshold > 100 or tCompletionThreshold < 0 then
+      put 100 into field "Completion Threshold"
+   end if
+   put field "Completion threshold" of me / 100 into sCompletionThreshold
+   put sCompletionThreshold into tContextA["extensions"]["completion-threshold"]
+   
+   put empty into tResultA
+   
    set the label of the target to "Close Video"
    # Create and send the xAPI statement
    # JOAN: add actor information
