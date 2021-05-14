@@ -209,6 +209,12 @@ on playPaused
    put sCompletionThreshold into tContextA["extensions"]["completion-threshold"]
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
+   ## result > extensions > progress
+   ## The calculation for progress  is simplified and does not account 
+   ## for segments skipped yet.
+   ## Result > extensions > progress
+   put round (tTime/ sVideoLength,2) into tProgress
+   put tProgress into tResultA["extensions"]["progress"]
    ## Result > extensions > played-segments
    addSegmentEndTime tTime
    put getPlayedSegments() into tResultA["extensions"]["played-segments"]
@@ -269,6 +275,12 @@ on playStopped
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
+   ## result > extensions > progress
+   ## The calculation for progress  is simplified and does not account 
+   ## for segments skipped yet.
+   ## Result > extensions > progress
+   put round (tTime/ sVideoLength,2) into tProgress
+   put tProgress into tResultA["extensions"]["progress"]
    ## Result > extensions > played-segments
    addSegmentEndTime tTime
    put getPlayedSegments() into tResultA["extensions"]["played-segments"]
