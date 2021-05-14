@@ -194,6 +194,19 @@ on playPaused
    put sSessionID into tContextA["extensions"]["session-id"]
    ## context > extensions > length
    put sVideoLength into tContextA["extensions"]["length"]
+   ## context > extensions > completion-threshold
+   put field "Completion threshold" of me into tCompletionThreshold
+   if tCompletionThreshold is empty then
+      put 100 into field "Completion Threshold"
+   end if
+   if tCompletionThreshold is not a number then
+      put 100 into field "Completion Threshold"
+   end if
+   if tCompletionThreshold > 100 or tCompletionThreshold < 0 then
+      put 100 into field "Completion Threshold"
+   end if
+   put field "Completion threshold" of me / 100 into sCompletionThreshold
+   put sCompletionThreshold into tContextA["extensions"]["completion-threshold"]
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
    ## Result > extensions > played-segments
@@ -237,6 +250,20 @@ on playStopped
    
    ## context > extensions > length
    put sVideoLength into tContextA["extensions"]["length"]
+   ## context > extensions > completion-threshold
+   put field "Completion threshold" of me into tCompletionThreshold
+   if tCompletionThreshold is empty then
+      put 100 into field "Completion Threshold"
+   end if
+   if tCompletionThreshold is not a number then
+      put 100 into field "Completion Threshold"
+   end if
+   if tCompletionThreshold > 100 or tCompletionThreshold < 0 then
+      put 100 into field "Completion Threshold"
+   end if
+   put field "Completion threshold" of me / 100 into sCompletionThreshold
+   put sCompletionThreshold into tContextA["extensions"]["completion-threshold"]
+   
    ## result > extensions > time
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
