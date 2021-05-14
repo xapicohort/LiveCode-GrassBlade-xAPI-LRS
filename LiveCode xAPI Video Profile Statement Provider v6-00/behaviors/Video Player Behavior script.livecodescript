@@ -174,6 +174,7 @@ on playstarted
    ## context > extensions > length
    put sVideoLength into tContextA["extensions"]["length"]
    
+   ## result > extensions > Time
    put tTime into tResultA["extensions"]["time"]
    addxAPIVerb "http://adlnet.gov/expapi/verbs/played", "played", tResultA, tContextA
    createxAPIstatement
@@ -231,6 +232,11 @@ on playStopped
    
    ## context > extensions > length
    put sVideoLength into tContextA["extensions"]["length"]
+   ## result > extensions > time
+   put the timescale of player "Video Object Player" of me into tPlayerTimeScale
+   put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
+   put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
+   put tTime into tResultA["extensions"]["time"]
    addxAPIVerb "http://adlnet.gov/expapi/verbs/completed", "completed", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
