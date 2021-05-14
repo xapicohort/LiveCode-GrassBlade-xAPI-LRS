@@ -171,6 +171,9 @@ on playstarted
    # context > extensions > session-ID
    put uuid("random") into sSessionID
    put sSessionID into tContextA["extensions"]["session-id"]
+   ## context > extensions > length
+   put sVideoLength into tContextA["extensions"]["length"]
+   
    put tTime into tResultA["extensions"]["time"]
    addxAPIVerb "http://adlnet.gov/expapi/verbs/played", "played", tResultA, tContextA
    createxAPIstatement
@@ -186,6 +189,8 @@ on playPaused
    # context > extensions > session-ID
    put uuid("random") into sSessionID
    put sSessionID into tContextA["extensions"]["session-id"]
+   ## context > extensions > length
+   put sVideoLength into tContextA["extensions"]["length"]
    put convertToxAPITimeFormat(tPlayerCurrentTime, tPlayerTimeScale) into tTime
    put tTime into tResultA["extensions"]["time"]
    
@@ -204,6 +209,7 @@ on seekedInVideo pStartTime, pEndTime
    # this player object message is mapped to the xAPI command paused
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
+   
    put convertToxAPITimeFormat(pStartTime, tPlayerTimeScale) into tStartTimeConverted
    put tStartTimeConverted into tResultA["result"]["extensions"]["time-from"]
    put convertToxAPITimeFormat(pEndTime, tPlayerTimeScale) into tEndTimeConverted
@@ -222,6 +228,9 @@ on playStopped
    # or startTime if playing in reverse.
    # If the endTime = the video duration or = 0 it will be triggered when the full movie plays.
    # If the endTime < the video Duration it will be triggered when the video reaches the value of endTime
+   
+   ## context > extensions > length
+   put sVideoLength into tContextA["extensions"]["length"]
    addxAPIVerb "http://adlnet.gov/expapi/verbs/completed", "completed", tResultA, tContextA
    createxAPIstatement
    sendxAPIstatement
