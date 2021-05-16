@@ -42,5 +42,5 @@ I have uploaded an updated zipped project file that you can download if you want
 
 When we started this project we were handling our versioning by serial numbering our stacks with a 1 digit suffix ie v1, v2.
 I am changing the versionning to using the common practice of \[main\].\[minor\].\[revision\].  
-Staring with version 6 makes it sound like it is a mature product when actually it is still a work in progreass with more of the video profile commands and extensions to be added.  So current version is 0.6.2 which more accurately reflects that this is on its way to a release version (1.0.0) but is not there yet.
+Staring with version 6 makes it sound like it is a mature product when actually it is still a work in progress with more of the video profile commands and extensions to be added.  So current version is 0.6.2 which more accurately reflects that this is on its way to a release version (1.0.0) but is not there yet.
 
