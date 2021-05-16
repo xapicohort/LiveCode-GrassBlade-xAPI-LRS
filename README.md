@@ -17,7 +17,7 @@ I also have the handler convertToxAPITimeFormat
 
 That is to convert from the current time in a video to the format that is used in the xAPI context and result extensions for the video profile.  I have not added handlers yet to add those extensions but you can see how that is done as well.
 
-04-23-21 Martin Updated this project with a version 5: 
+**04-23-21 Martin Updated this project with a version 5: **
 
 GrassBlade xAPI LRS connection-jmd-v5.livecode have been uploaded, also as a zipped file.
 
@@ -31,3 +31,15 @@ Video of the v6 demo is in YouTube: https://youtu.be/Aih1aVEnFfU
 Back ground video on converting LiveCode stack with internal scripts to external scripts for mangement via GitHub: https://youtu.be/JHW-yyVhEeA
 
 This is a video of how Martin created script only stacks to hold the object script that were stored within the  binary stackfile to this point.  The script only stacks are just plain text files that git hub can track changes to so we can see the history of changes, branch, commit, do pull requests etc. that is not possible if the scripts are in the binary stackfile.
+
+**05-16-21 **
+
+**Updated the zipped project file**
+
+I have uploaded an updated zipped project file that you can download if you want to use this without working from git repo.  If you make any improvements please submit back to us and we can incorporate them into this project.
+
+**Changed version numbering**
+When we started this project we were handling our versioning by serial numbering our stacks with a 1 digit suffix ie v1, v2.
+I am changing the versionning to using the common practice of \[main\].\[minor\].\[revision\].  
+Staring with version 6 makes it sound like it is a mature product when actually it is still a work in progreass with more of the video profile commands and extensions to be added.  So current version is 0.6.2 which more accurately reflects that this is on its way to a release version (1.0.0) but is not there yet.
+
