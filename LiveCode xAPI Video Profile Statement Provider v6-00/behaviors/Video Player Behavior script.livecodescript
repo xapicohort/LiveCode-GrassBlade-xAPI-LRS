@@ -7,6 +7,7 @@ on opencard
    put empty into field "xAPI Statement"
    put empty into field "Simple Statement Display"
    set the filename of player "Video Object Player" of me to empty
+   set the rect of player "Video Object Player" of me to the rect of graphic "Video Rect"
    set the label of of Button "Open/Close Video"  to "Open Video"
    put empty into field "video name" of me
    focus on field "video name" of me
@@ -78,7 +79,10 @@ command OpenVideo
    answer file "Select a video." with type tAcceptedVideoTypes
    # Update the user interface
    put it into field "video URL"
+   lock screen
    set the filename of player "Video Object Player" of me to field "video URL" of me
+   resizeVideo
+   unlock screen
    put empty into sSegmentStartTime
    put empty into sSegmentEndtime
    put empty into sPlayedSegments
@@ -125,14 +129,42 @@ command OpenVideo
    sendxAPIstatement
 end OpenVideo
 
+on resizeVideo
+   put the width of player "Video Object Player" of me into sOriginalVideoWidth
+   put the height of player "Video Object Player" of me into sOriginalVideoHeight
+   if sOriginalVideoWidth is 0 or sOriginalVideoWidth is empty then
+      set the rect of player "Video Object Player" of me to the rect of grc "Video Rect"
+   else
+      put the height of graphic "Video Rect" into tDisplayVideoHeight
+      put the width of graphic "Video Rect" into tDisplayVideoWidth
+      if the filename of player "Video Object Player" of me is not empty then
+         put tDisplayVideoHeight/tDisplayVideoWidth into tMovieDisplayRatio
+         put sOriginalVideoHeight/sOriginalVideoWidth into tOriginalMovieRatio
+         if tOriginalMovieRatio > tMovieDisplayRatio then
+            set the height of player "Video Object Player" of me to tDisplayVideoHeight
+            set the width of player "Video Object Player" of me to trunc(tDisplayVideoHeight / tOriginalMovieRatio) 
+         else
+            set the width of player "Video Object Player" of me to tDisplayVideoWidth
+            set the height of player"Video Object Player" of me to tOriginalMovieRatio *tDisplayVideoWidth
+         end if
+      else
+         set the width of player "Video Object Player" of me to tDisplayVideoWidth
+         set the height of player"Video Object Player" of me to tDisplayVideoHeight
+      end if
+      set the loc of player "Video Object Player" of me to the loc of graphic "Video Rect"
+   end if
+end resizeVideo
+
 command closeVideo
    # this is mapped to the xAPI verb terminated
    ## get data for setting result and/or context
    set the cISO8601TimeStamp of this stack to the milliseconds
    put the currenttime of player "Video Object Player" of me into tPlayerCurrentTime
    put the timescale of player "Video Object Player" of me into tPlayerTimeScale
+   lock screen
    set the filename of player "Video Object Player" of me to empty
-   
+   set the rect of player "Video Object Player" of me to the rect of graphic "Video Rect"
+   unlock screen
    ## context > extensions > length
    put sVideoLength into tContextA["extensions"]["length"]
    ## context > extensions > completion-threshold
